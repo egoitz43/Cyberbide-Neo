@@ -1,5 +1,4 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
+import { base44 } from '@/api/base44Client';
 
 import { appParams } from '@/lib/app-params';
 
@@ -49,7 +48,7 @@ export function mfaSession(challenge) {
   const call = async (suffix, body, method) => {
     const result = await request(`mfa/${suffix}`, { method, body, token: credential });
     if (result.mfa_management_token) credential = result.mfa_management_token;
-    if (result.access_token) db.auth.setToken(result.access_token);
+    if (result.access_token) base44.auth.setToken(result.access_token);
     return result;
   };
   return {
@@ -89,7 +88,7 @@ export function resumeMfa() {
     const rest = params.toString();
     window.history.replaceState(null, '', `${window.location.pathname}${rest ? `?${rest}` : ''}`);
     const result = await request('mfa/exchange', { body: { code, code_verifier: verifier } });
-    if (result.access_token) db.auth.setToken(result.access_token);
+    if (result.access_token) base44.auth.setToken(result.access_token);
     return result;
   })();
   return resumed;
@@ -110,7 +109,7 @@ export async function signInWithProvider(provider, returnTo, { manage = false } 
   const info = await loadSignInOptions();
   // Enterprise SSO sign-in is exempt from Base44 MFA; only managing factors asks for it.
   if (!manage && (info.auth_config?.mfa_policy !== 'required' || provider === 'sso')) {
-    return db.auth.loginWithProvider(provider, returnTo);
+    return base44.auth.loginWithProvider(provider, returnTo);
   }
   if (isInAppBrowser()) {
     // In-app browsers hand sign-in to the system browser through the platform's MFA page.

@@ -1,3 +1,4 @@
+import { getAccessToken } from '@base44/sdk/utils/auth-utils';
 
 const isNode = typeof window === 'undefined';
 

@@ -1,12 +1,10 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
 import { missions as w1 } from './missions/world1';
 import { missions as w2 } from './missions/world2';
 import { missions as w3 } from './missions/world3';
 import { missions as w4 } from './missions/world4';
 import { missions as w5 } from './missions/world5';
 
-export const HERO_IMAGE = 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/653fdb1f2_generated_image.png';
+export const HERO_IMAGE = 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/653fdb1f2_generated_image.png';
 
 export const WORLDS = [
   {
@@ -14,8 +12,8 @@ export const WORLDS = [
     index: 1,
     accent: '#FF6B9A',
     accent2: '#B56BFF',
-    portrait: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/2e07d1754_generated_image.png',
-    island: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/e7c9af27c_generated_image.png',
+    portrait: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/2e07d1754_generated_image.png',
+    island: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/e7c9af27c_generated_image.png',
     title: { es: 'Reino del Respeto', eu: 'Errespetuaren Erresuma' },
     theme: { es: 'Convivencia digital y ciberacoso', eu: 'Elkarbizitza digitala eta ziberjazarpena' },
     description: {
@@ -33,8 +31,8 @@ export const WORLDS = [
     index: 2,
     accent: '#FFB454',
     accent2: '#FF7A59',
-    portrait: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/4a6b9330c_generated_image.png',
-    island: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/15addab7b_generated_image.png',
+    portrait: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/4a6b9330c_generated_image.png',
+    island: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/15addab7b_generated_image.png',
     title: { es: 'Río de la Verdad', eu: 'Egiaren Ibaia' },
     theme: { es: 'Noticias falsas y desinformación', eu: 'Albiste faltsuak eta desinformazioa' },
     description: {
@@ -52,8 +50,8 @@ export const WORLDS = [
     index: 3,
     accent: '#3ED9B0',
     accent2: '#4FB8FF',
-    portrait: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/590383deb_generated_image.png',
-    island: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/ff2f2cdb9_generated_image.png',
+    portrait: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/590383deb_generated_image.png',
+    island: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/ff2f2cdb9_generated_image.png',
     title: { es: 'Montaña de la Privacidad', eu: 'Pribatutasunaren Mendia' },
     theme: { es: 'Datos personales y huella digital', eu: 'Datu pertsonalak eta aztarna digitala' },
     description: {
@@ -71,8 +69,8 @@ export const WORLDS = [
     index: 4,
     accent: '#9B8CFF',
     accent2: '#FF6BD6',
-    portrait: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/d0148ea2b_generated_image.png',
-    island: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/5510a1dd8_generated_image.png',
+    portrait: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/d0148ea2b_generated_image.png',
+    island: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/5510a1dd8_generated_image.png',
     title: { es: 'Torre de la Seguridad', eu: 'Segurtasunaren Dorrea' },
     theme: { es: 'Contraseñas, phishing y cuentas', eu: 'Pasahitzak, phishinga eta kontuak' },
     description: {
@@ -90,8 +88,8 @@ export const WORLDS = [
     index: 5,
     accent: '#5AC8FF',
     accent2: '#A175FF',
-    portrait: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/85fadf2b2_generated_image.png',
-    island: 'https://media.db.com/images/public/6af5a710ef1d70f0cdb877ea/28108dd32_generated_image.png',
+    portrait: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/85fadf2b2_generated_image.png',
+    island: 'https://media.base44.com/images/public/6af5a710ef1d70f0cdb877ea/28108dd32_generated_image.png',
     title: { es: 'Ciudad de la IA', eu: 'AAaren Hiria' },
     theme: { es: 'Inteligencia artificial y deepfakes', eu: 'Adimen artifiziala eta deepfakeak' },
     description: {

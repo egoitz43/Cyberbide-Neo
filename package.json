@@ -1,5 +1,5 @@
 {
-  "name": "base44-app",
+  "name": "cyberbide",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,11 +9,13 @@
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p ./jsconfig.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.63",
-    "@base44/vite-plugin": "^1.0.54",
+    "@base44/vite-plugin": "^1.0.53",
     "@hello-pangea/dnd": "^17.0.0",
     "@hookform/resolvers": "^4.1.2",
     "@radix-ui/react-accordion": "^1.2.3",
@@ -96,6 +98,10 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2",
-    "vite": "^8.2.4"
+    "vite": "^8.2.4",
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   }
 }

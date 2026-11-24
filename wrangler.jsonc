@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cyberbide",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    // Las rutas de React Router (/world/w1, /profile...) devuelven index.html
+    // al recargar la página, en vez de un 404.
+    "not_found_handling": "single-page-application"
+  }
+}

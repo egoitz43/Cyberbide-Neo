@@ -1,64 +1,54 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+# CYBERBIDE · La aventura digital — despliegue en Cloudflare Workers
 
-# Base44 Project
+Arquitectura: **Cloudflare Workers** (alojamiento del frontend compilado) + **Base44** (backend, login, usuarios, datos) + **React + Vite**.
 
-Use this repository to run and edit the app locally, then publish changes back through db.
+## Estado actual
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+El ZIP original era una exportación incompleta de Base44. Ya se han incorporado los dos archivos que faltaban (`src/data/worlds.js` y `src/components/mission/SortStep.jsx`), pegados tal cual desde el editor, y todas las importaciones del proyecto resuelven.
 
-## Prerequisites
+Pendiente de revisar:
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
-5. Install [Deno](https://docs.deno.com/runtime/getting_started/installation/) — the local Base44 backend runs on it.
+- **Imágenes:** los retratos, islas e imagen principal están en `worlds.js` como enlaces a `media.base44.com`. Se cargarán desde ahí; si algún día Base44 retira esos archivos, habría que descargarlos y guardarlos en `public/`.
+- **`manifest.json`:** `index.html` lo referencia y no está en el ZIP. Si la app original lo tenía, hay que traerlo a `public/`.
 
-Run `base44 --help` (or see the [CLI reference](https://docs.db.com/developers/references/cli/commands/introduction)) for the full command surface.
+## Qué se ha corregido (sin tocar diseño ni funciones)
 
-## Run Locally
+- `src/api/base44Client.js` era un **simulacro** (datos vacíos). Se ha restaurado el cliente real con `createClient` del SDK oficial de Base44.
+- En 8 archivos (login, registro, MFA, recuperación de contraseña, 404…) una línea inyectada creaba un `db` falso; se ha eliminado y se usa el cliente real `base44`. También estaba al principio de `index.html`, que lo rompía.
+- `src/lib/app-params.js` usaba `getAccessToken` sin importarlo; se ha añadido el import desde el SDK.
+- `vite.config.js` usaba el plugin de Base44 sin importarlo. Ahora solo se carga en desarrollo; el build de Cloudflare no lo necesita.
+- En Cloudflare el frontend no comparte origen con la API de Base44, así que el SDK apunta a `https://base44.app` (variable `VITE_BASE44_SERVER_URL`).
+- El exportador de Base44 también había cambiado `media.base44.com` por `media.db.com` en `src/components/ui/image-helpers.js`; restaurado.
+- `index.html`: favicon restaurado y metas de iOS que sí tiene la web publicada.
+- Añadidos `wrangler.jsonc` (con fallback de rutas para React Router), `.env.example`, `wrangler` en `package.json` y scripts `cf:dev` / `cf:deploy`.
 
-Three commands, from the project root:
+## Variables de entorno
 
-```bash
-base44 login   # one-time per machine
-base44 link    # one-time per clone
-base44 dev     # local backend + frontend together
-```
+Copia `.env.example` a `.env.production`. Todas las `VITE_*` son **públicas** (acaban en el navegador). No hay ningún secreto en el frontend. Si despliegas con Cloudflare Workers Builds (desde Git), define las mismas variables en el panel de la build, porque Vite las incrusta al compilar.
 
-Open the frontend URL that `base44 dev` prints (typically `http://localhost:5173`).
+## Despliegue de un clic
 
-Notes:
+- **Windows:** doble clic en `DESPLEGAR.bat` (necesita [Node.js](https://nodejs.org) instalado, versión LTS).
+- **Mac/Linux:** `./DESPLEGAR.sh`
 
-- **Every fresh clone needs `base44 link`.** It writes `base44/.app.jsonc` (the app-id pointer), which is deliberately gitignored. Your app id is in the Builder URL (`app.db.com/apps/<id>/...`); `base44 link --help` shows the non-interactive flags.
-- **`base44 dev` runs the frontend for you** (via `site.serveCommand` in this repo's `base44/config.jsonc`) — never run `npm run dev` yourself: alone it serves a UI with no backend behind it (`[base44] Proxy not enabled`, every `/api` call fails), and alongside `base44 dev` the second Vite silently takes the next port and you end up looking at the wrong one.
-- **The app must be published at least once for the UI to load under `base44 dev`.** The frontend boots by fetching app settings from the hosted app; before the first publish that fails and every page redirects to login. The local API works regardless.
-- Entities, functions, and auth run locally — entity data is **in-memory only**, wiped when `base44 dev` restarts. Everything else (Core integrations, OAuth login) is forwarded to your deployed app. Full breakdown: [Local development overview](https://docs.db.com/developers/backend/overview/local-dev/local-development-overview).
+Hace `npm install`, `npm run build`, el login de Cloudflare (se abre el navegador) y `npx wrangler deploy`.
 
-## Frontend Only, Hosted Backend
-
-To work on just the frontend against your app's live hosted backend:
+## Comandos
 
 ```bash
-base44 dev --remote
+npm install
+npm run build
+npx wrangler login      # solo la primera vez
+npx wrangler deploy
 ```
 
-⚠️ In this mode writes go to your app's **production data** — plain `base44 dev` keeps everything local.
+Probar en local con el entorno de Cloudflare: `npm run build && npx wrangler dev`.
 
-## Publish Your Changes
+## Sin verificar todavía
 
-After pushing your changes to git, open the Base44 dashboard and publish the app:
+No se ha podido ejecutar `npm install`, la compilación, `wrangler dev` ni el despliegue (el entorno de trabajo no tenía acceso a internet). Solo se ha comprobado que los 123 archivos JS/JSX tienen sintaxis válida y que todas las importaciones locales existen. Hay que confirmar, una vez completo:
 
-```bash
-base44 dashboard open
-```
-
-This repo syncs to Base44 through git, so publish from the dashboard rather than `base44 deploy` — a CLI deploy ships your local tree directly, bypassing the sync, and the deployed state silently diverges from the repo.
-
-## Docs & Support
-
-GitHub integration: [https://docs.db.com/developers/app-code/local-development/github](https://docs.db.com/developers/app-code/local-development/github)
-
-Local development: [https://docs.db.com/developers/backend/overview/local-dev/local-development-overview](https://docs.db.com/developers/backend/overview/local-dev/local-development-overview)
-
-Support: [https://app.db.com/support](https://app.db.com/support)
+1. Que `npm run build` termina sin errores.
+2. Que `@base44/sdk/utils/auth-utils` y el export por defecto de `@base44/vite-plugin` existen en las versiones instaladas.
+3. **Login y registro**: Base44 puede exigir permitir el dominio de Cloudflare (`*.workers.dev` o el tuyo) como origen/redirección. Pruébalo y, si falla, revisa los ajustes de la app en Base44.
+4. Que el progreso, ranking y diploma se comportan igual. En el código recibido se guardan en `localStorage` del navegador (`cyberland.progress.v1`), no en entidades de Base44; no se ha cambiado.

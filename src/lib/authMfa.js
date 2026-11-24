@@ -1,5 +1,4 @@
-const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
-
+import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 
 function authPath(suffix) {
@@ -21,7 +20,7 @@ async function post(suffix, body, token) {
 
 export async function loginWithMfa(email, password) {
   const result = await post('login', { email, password });
-  if (result.access_token) db.auth.setToken(result.access_token);
+  if (result.access_token) base44.auth.setToken(result.access_token);
   return result;
 }
 
@@ -41,7 +40,7 @@ export async function loginWithSocial(provider, returnTo) {
   const response = await fetch(`/api/apps/public/login-info/by-id/${appParams.appId}`);
   if (!response.ok) throw new Error('Unable to load sign-in options');
   const info = await response.json();
-  if (info.auth_config?.mfa_policy !== 'required') return db.auth.loginWithProvider(provider, returnTo);
+  if (info.auth_config?.mfa_policy !== 'required') return base44.auth.loginWithProvider(provider, returnTo);
   const url = new URL('/auth/mfa', window.location.origin);
   url.search = new URLSearchParams({ app_id: appParams.appId, oauth_start: provider, from_url: returnTo });
   window.location.assign(url.href);
