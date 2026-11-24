@@ -1,5 +1,9 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig(async ({ command }) => {
@@ -21,5 +25,12 @@ export default defineConfig(async ({ command }) => {
     )
   }
 
-  return { plugins }
+  return {
+    plugins,
+    resolve: {
+      // El plugin de Base44 definía el alias "@" -> src; sin él, el build
+      // no encontraba imports como "@/App.jsx".
+      alias: { '@': path.resolve(__dirname, './src') },
+    },
+  }
 })
